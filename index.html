@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#04050b">
+<meta name="description" content="NEXUS — Sopa de letras futurista: 20 categorías, tableros dinámicos y una interfaz neón responsive.">
+<title>NEXUS · Sopa de Letras Futurista</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23070a14'/%3E%3Cpath d='M18 46V18l28 28V18' fill='none' stroke='%2322e6ff' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<!-- ══════════ FONDO AMBIENTAL ══════════ -->
+<div class="bg" aria-hidden="true">
+  <div class="bg__plane"></div>
+  <div class="bg__beam"></div>
+  <div class="bg__orb bg__orb--cyan"></div>
+  <div class="bg__orb bg__orb--magenta"></div>
+  <div class="bg__vignette"></div>
+  <div class="bg__scan"></div>
+</div>
+
+<!-- ══════════ 1. INTRO 3s ══════════ -->
+<section id="intro" class="screen intro is-active" aria-label="Cargando sistema">
+  <div class="intro__chrome" aria-hidden="true">
+    <span class="hud-corner hud-corner--tl"></span>
+    <span class="hud-corner hud-corner--tr"></span>
+    <span class="hud-corner hud-corner--bl"></span>
+    <span class="hud-corner hud-corner--br"></span>
+    <span class="hud-tag hud-tag--tl">NEXUS.SYS // BOOT</span>
+    <span class="hud-tag hud-tag--tr">PROTOCOLO 2.0</span>
+    <span class="hud-tag hud-tag--bl">GRID ENGINE</span>
+    <span class="hud-tag hud-tag--br">v2.0.26</span>
+  </div>
+
+  <div class="intro__stage">
+
+    <div class="core">
+      <svg viewBox="0 0 200 200" class="core__svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="gradRing" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#22e6ff"/>
+            <stop offset="55%" stop-color="#8b5cff"/>
+            <stop offset="100%" stop-color="#ff3fd8"/>
+          </linearGradient>
+        </defs>
+        <circle class="core__track" cx="100" cy="100" r="88"/>
+        <g class="core__ticks" id="coreTicks"></g>
+        <circle class="core__orbit" cx="100" cy="100" r="66"/>
+        <circle class="core__orbit core__orbit--rev" cx="100" cy="100" r="58"/>
+        <circle id="ringProgress" class="core__bar" cx="100" cy="100" r="88"/>
+      </svg>
+      <span class="core__pulse"></span>
+      <span class="core__pulse core__pulse--2"></span>
+      <div class="core__value"><span id="loaderPct">0</span><i>%</i></div>
+      <span class="core__label">SYS.BOOT</span>
+    </div>
+
+    <div class="intro__brand">
+      <h1 class="glitch intro__title" data-text="NEXUS">NEXUS</h1>
+      <p class="intro__sub">Sopa de letras · Protocolo 2.0</p>
+    </div>
+
+    <div class="boot-log" id="bootLog" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ══════════ 2. CONFIGURACIÓN ══════════ -->
+<main id="setup" class="screen setup" aria-label="Configurar partida">
+  <div class="shell">
+
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32"><path d="M8 25V7l16 18V7" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <div class="brand__text">
+          <strong>NEXUS</strong>
+          <small>WORD GRID SYSTEM</small>
+        </div>
+      </div>
+      <div class="topbar__meta">
+        <span class="pill"><i class="dot"></i> SISTEMA ONLINE</span>
+      </div>
+    </header>
+
+    <section class="hero hero--compact">
+      <p class="eyebrow">// SELECCIÓN DE MISIÓN</p>
+      <h2 class="hero__title">Elige tu <span>categoría</span></h2>
+      <p class="hero__text">Toca una categoría, ajusta el tablero y juega.</p>
+    </section>
+
+    <form id="setupForm" class="setup-flow" novalidate>
+
+      <section class="panel panel--categories">
+        <div class="panel__head">
+          <h3><span class="panel__idx">01</span> Categorías</h3>
+          <span class="panel__hint" id="catCounter">0 / 20</span>
+        </div>
+        <div class="cat-grid" id="catGrid" role="radiogroup" aria-label="Categorías"></div>
+      </section>
+
+      <section class="panel controlbar">
+        <div class="ctrl">
+          <span class="ctrl__label">Tablero</span>
+          <div class="segmented" id="sizeGroup" role="radiogroup" aria-label="Letras por lado"></div>
+        </div>
+
+        <div class="ctrl">
+          <span class="ctrl__label">Palabras</span>
+          <div class="stepper">
+            <button type="button" class="step" id="wordsMinus" aria-label="Una palabra menos">−</button>
+            <b id="wordsOut">10</b>
+            <button type="button" class="step" id="wordsPlus" aria-label="Una palabra más">+</button>
+          </div>
+        </div>
+
+        <div class="ctrl">
+          <span class="ctrl__label">Direcciones</span>
+          <div class="segmented segmented--compact" id="dirGroup" role="radiogroup" aria-label="Direcciones permitidas">
+            <button type="button" class="seg is-on" data-dirs="8">8 ejes</button>
+            <button type="button" class="seg" data-dirs="4">4 ejes</button>
+          </div>
+        </div>
+
+        <div class="ctrl ctrl--cta">
+          <button type="submit" class="btn btn--primary" id="btnStart" disabled>
+            <span>JUGAR</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <p class="setup__meta" id="setupMeta">Sin categoría · 12 × 12 · 10 palabras · 8 ejes</p>
+    </form>
+  </div>
+
+  <button type="button" class="btn btn--primary cta-mobile" id="btnStartMobile" disabled>
+    <span>JUGAR</span>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+</main>
+
+<!-- ══════════ 3. JUEGO ══════════ -->
+<section id="game" class="screen game" aria-label="Tablero de juego">
+  <div class="shell shell--game">
+
+    <header class="gamebar">
+      <button type="button" class="btn-icon" id="btnExit" aria-label="Volver al menú">
+        <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+
+      <div class="gamebar__center">
+        <span class="gamebar__cat" id="hudCat">CATEGORÍA</span>
+        <span class="gamebar__sub" id="hudSub">12 × 12 · 10 palabras</span>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat"><small>TIEMPO</small><b id="hudTime">00:00</b></div>
+        <div class="stat"><small>HALLAZGO</small><b id="hudFound">0/10</b></div>
+      </div>
+
+      <div class="gamebar__actions">
+        <button type="button" class="btn btn--ghost" id="btnHint">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 00-3.5 10.9V17h7v-3.1A6 6 0 0012 3zM9.5 20h5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          PISTA
+        </button>
+        <button type="button" class="btn btn--ghost" id="btnRestart">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 11-2.6-5.9M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          REINICIAR
+        </button>
+        <button type="button" class="btn-icon" id="btnSound" aria-label="Activar o desactivar sonido" aria-pressed="true">
+          <svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4zm12-1.5a5 5 0 010 9" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="playfield">
+
+      <div class="board-stage">
+        <div class="board-frame">
+          <span class="corner corner--tl"></span><span class="corner corner--tr"></span>
+          <span class="corner corner--bl"></span><span class="corner corner--br"></span>
+          <div class="board" id="board" role="grid" aria-label="Sopa de letras"></div>
+          <div class="board-lock" id="boardLock" hidden><span>SECUENCIA COMPLETADA</span></div>
+        </div>
+        <div class="progress"><span id="progressFill"></span></div>
+        <p class="board-tip">Arrastra o toca la primera y la última letra de cada palabra.</p>
+      </div>
+
+      <aside class="panel panel--words">
+        <div class="panel__head">
+          <h3><span class="panel__idx">03</span> Objetivos</h3>
+          <span class="panel__hint" id="wordCounter">0 / 10</span>
+        </div>
+        <ul class="word-list" id="wordList"></ul>
+        <div class="panel__foot">
+          <button type="button" class="btn btn--ghost btn--full" id="btnReveal">REVELAR TABLERO</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ MODAL FIN ══════════ -->
+<div class="modal" id="winModal" hidden>
+  <div class="modal__backdrop" data-close></div>
+  <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="winTitle">
+    <p class="eyebrow">// SECUENCIA COMPLETADA</p>
+    <h2 id="winTitle" class="modal__title">MISIÓN<br><span>CUMPLIDA</span></h2>
+    <p class="modal__cat" id="winCat">Categoría</p>
+
+    <div class="modal__stats">
+      <div><small>TIEMPO</small><b id="winTime">00:00</b></div>
+      <div><small>PALABRAS</small><b id="winWords">0</b></div>
+      <div><small>PISTAS</small><b id="winHints">0</b></div>
+    </div>
+    <p class="modal__record" id="winRecord"></p>
+
+    <div class="modal__actions">
+      <button type="button" class="btn btn--primary" id="btnAgain">JUGAR OTRA VEZ</button>
+      <button type="button" class="btn btn--ghost" data-close>CAMBIAR CATEGORÍA</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
